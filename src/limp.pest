@@ -2,7 +2,7 @@
 program = _{ SOI ~ expr_list ~ EOI }
 expr_list = _{ expr+ }
 expr = { atom | invocation }
-atom = { int | float | name }
+atom = { name | float | int }
 invocation = { "(" ~ expr_list ~ ")" }
 
 // Atoms
