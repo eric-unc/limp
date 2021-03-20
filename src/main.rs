@@ -45,6 +45,24 @@ fn repl() {
 }
 
 fn eval_line(line: &String) {
+	let pairs = LimpParser::parse(Rule::expr, line).unwrap_or_else(|e| panic!("{}", e));
+
+	for pair in pairs {
+		for inner_pair in pair.into_inner() {
+			match inner_pair.as_rule() {
+				Rule::atom => eval_atom(inner_pair.as_str()),
+        Rule::invocation => eval_invocation(inner_pair.as_str()),
+        _ => unreachable!()
+			};
+		}
+	}
+}
+
+fn eval_atom(atom: &str) {
+	println!("{}", atom);
+}
+
+fn eval_invocation(invocation: &str) {
 	// TODO
-	println!("{}", line);
+	println!("Invocation: {}", invocation)
 }
