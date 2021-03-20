@@ -1,11 +1,13 @@
 // Core
-program = { SOI ~ expr_list ~ EOI }
-expr_list = { expr+ }
+program = _{ SOI ~ expr_list ~ EOI }
+expr_list = _{ expr+ }
 expr = { atom | invocation }
 atom = { int | float | name }
 invocation = { "(" ~ expr_list ~ ")" }
 
 // Atoms
-int = { ("+" | "-")? ~ ASCII_DIGIT+ }
-float = { ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
+float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 name = { "+" | "-" | "*" | "/" | "print" }
+
+WHITESPACE = _{ " " | "\t" }
