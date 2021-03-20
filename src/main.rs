@@ -4,12 +4,13 @@ extern crate pest_derive;
 
 use pest::Parser;
 use std::env;
+use std::io::{self, BufRead, Write};
 
 #[derive(Parser)]
 #[grammar = "limp.pest"]
 pub struct LimpParser;
 
-fn main(){
+fn main() {
 	//let p = LimpParser::parse(Rule::program, "5");
 	//println!("{:?}", p);
 
@@ -22,11 +23,28 @@ fn main(){
 	}
 }
 
-fn load_and_interpret(file_name: &String){
+fn load_and_interpret(file_name: &String) {
 	// TODO
 }
 
-fn repl(){
-	// TODO
+fn repl() {
+	while true {
+		print!("> ");
+		io::stdout().flush().unwrap();
+
+		let mut line = String::new();
+		io::stdin().read_line(&mut line).unwrap();
+		line = line.strip_suffix("\n").unwrap().to_string();
+		if line.is_empty() {
+			return;
+		}
+
+		eval_line(&line);
+		io::stdout().flush().unwrap();
+	}
 }
 
+fn eval_line(line: &String) {
+	// TODO
+	println!("{}", line);
+}
