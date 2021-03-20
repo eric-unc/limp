@@ -1,6 +1,11 @@
-program = { atom }
+// Core
+program = { SOI ~ expr_list ~ EOI }
+expr_list = { expr+ }
+expr = { atom | invocation }
+atom = { int | float | name }
+invocation = { "(" ~ expr_list ~ ")" }
 
-atom = { number }
-
-// TODO: expand numerical representation
-number = { ('0'..'9')+ }
+// Atoms
+int = { ('0'..'9')+ }
+float = { ('0'..'9')+ ~ ("." ~ ('0'..'9')+)? }
+name = { "+" | "-" | "*" | "/" | "print" }
