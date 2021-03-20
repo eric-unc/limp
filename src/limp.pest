@@ -1,0 +1,6 @@
+program = { atom }
+
+atom = { number }
+
+// TODO: expand numerical representation
+number = { ('0'..'9')+ }
