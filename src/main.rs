@@ -4,7 +4,7 @@ extern crate pest_derive;
 
 use pest::Parser;
 use std::env;
-use std::io::{self, BufRead, Write};
+use std::io::{self, Write};
 
 #[derive(Parser)]
 #[grammar = "limp.pest"]
@@ -28,7 +28,7 @@ fn load_and_interpret(file_name: &String) {
 }
 
 fn repl() {
-	while true {
+	loop {
 		print!("> ");
 		io::stdout().flush().unwrap();
 
