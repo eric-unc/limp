@@ -54,7 +54,7 @@ fn eval_line(line: &String) {
 		for inner_pair in pair.into_inner() {
 			match inner_pair.as_rule() {
 				Rule::atom => eval_atom(inner_pair.as_str()),
-        Rule::invocation => eval_invocation(inner_pair.as_str()),
+				Rule::invocation => eval_invocation(inner_pair.as_str()),
         _ => unreachable!()
 			};
 		}
