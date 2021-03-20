@@ -10,6 +10,9 @@ use std::io::{self, Write};
 #[grammar = "limp.pest"]
 pub struct LimpParser;
 
+#[cfg(test)]
+mod tests;
+
 fn main() {
 	//let p = LimpParser::parse(Rule::program, "5");
 	//println!("{:?}", p);
