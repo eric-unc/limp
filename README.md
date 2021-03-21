@@ -44,6 +44,7 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 | `&` | Bit ands the first rand with the second. Requires at two rands (int).
 | <code>&#124;</code> | Bit ors the first rand with the second. Requires at two rands (int).
 | `^` | Bit xors the first rand with the second. Requires at two rands (int).
+| `!` | Bit nots the given rand. Requires just one rand (int).
 | `and` | Ands all rands given. Requires at least two rands (boolean).
 | `or` | Ors all rands given. Requires at least two rands (boolean).
 | `xor` | Xors all rands given. Requires at least two rands (boolean).

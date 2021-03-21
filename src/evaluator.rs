@@ -316,7 +316,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									Integer(i2) => Integer(i1 & i2),
 									_ => { panic!("Bad type of {:?} for &!", rands[1])}
 								}
-							}
+							},
 							_ => { panic!("Bad type of {:?} for &!", rands[0])}
 						}
 					},
@@ -331,7 +331,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									Integer(i2) => Integer(i1 | i2),
 									_ => { panic!("Bad type of {:?} for |!", rands[1])}
 								}
-							}
+							},
 							_ => { panic!("Bad type of {:?} for |!", rands[0])}
 						}
 					},
@@ -346,8 +346,18 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									Integer(i2) => Integer(i1 ^ i2),
 									_ => { panic!("Bad type of {:?} for ^!", rands[1])}
 								}
-							}
+							},
 							_ => { panic!("Bad type of {:?} for ^!", rands[0])}
+						}
+					},
+					"!" => {
+						if rands.len() != 1 {
+							panic!("Rator `!` expects 2 rands!");
+						}
+
+						match rands[0] {
+							Integer(i) => { return Integer(!i); },
+							_ => { panic!("Bad type of {:?} for !!", rands[0]); }
 						}
 					},
 					"and" => {
