@@ -41,6 +41,7 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 | `-` | Subtracts the first rand from the remaining rands. Requires at least two rands (int/float).
 | `*` | Multiplies all rands given. Requires at least two rands (int/float).
 | `/` | Divides the first rand from the remaining rands. Requires at least two rands (int/float).
+| `&` | Bit ands the first rand with the second. Requires at two rands (int).
 | `and` | Ands all rands given. Requires at least two rands (boolean).
 | `or` | Ors all rands given. Requires at least two rands (boolean).
 | `xor` | Xors all rands given. Requires at least two rands (boolean).

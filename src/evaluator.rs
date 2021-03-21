@@ -305,6 +305,21 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 
 						return f_to_i_if_possible(ret_val);
 					},
+					"&" => {
+						if rands.len() != 2 {
+							panic!("Rator `&` expects 2 rands!");
+						}
+
+						match rands[0] {
+							Integer(i1) => {
+								return match rands[1] {
+									Integer(i2) => Integer(i1 & i2),
+									_ => { panic!("Bad type of {:?} for &!", rands[1])}
+								}
+							}
+							_ => { panic!("Bad type of {:?} for &!", rands[0])}
+						}
+					},
 					"and" => {
 						if rands.len() < 2 {
 							panic!("Rator `and` expects at least 2 rands!");
