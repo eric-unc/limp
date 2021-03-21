@@ -1,10 +1,9 @@
-
 use pest::iterators::{Pairs, Pair};
 use std::collections::HashMap;
 use crate::Rule;
 use std::ptr::null;
 use std::fmt;
-use crate::evaluator::LimpValue::Float;
+use std::process::exit;
 
 #[derive(Debug)]
 pub enum LimpValue {
@@ -13,6 +12,8 @@ pub enum LimpValue {
 	Name(String),
 	ErrorValue
 }
+
+use crate::evaluator::LimpValue::*;
 
 type Scope = HashMap<String, LimpValue>;
 type Bindings = Vec<Scope>;
@@ -42,8 +43,16 @@ impl Environment {
 	}
 }
 
+pub fn eval(tree: Pairs<Rule>){
+	eval_with_env(tree, &Environment::new());
+}
+
+pub fn eval_with_env(tree: Pairs<Rule>, env: &Environment){
+	eval_program(tree);
+}
+
 // program ::= expr_list
-pub fn evaluate(tree: Pairs<Rule>){
+fn eval_program(tree: Pairs<Rule>){
 	for pair in tree {
 
 		for inner_pair in pair.into_inner() {
@@ -73,7 +82,7 @@ fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
 
 // expr :: atom | invocation
 fn eval_expr(expr: Pair<Rule>) -> LimpValue {
-	let mut ret = LimpValue::ErrorValue; // TODO: clean this up
+	let mut ret = ErrorValue; // TODO: clean this up
 
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
@@ -87,7 +96,7 @@ fn eval_expr(expr: Pair<Rule>) -> LimpValue {
 }
 // atom ::= float | int | name
 fn eval_atom(atom: Pair<Rule>) -> LimpValue {
-	let mut ret = LimpValue::ErrorValue;
+	let mut ret = ErrorValue;
 
 	for inner_pair in atom.into_inner() {
 		match inner_pair.as_rule() {
@@ -102,20 +111,20 @@ fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 }
 
 fn eval_float(float: Pair<Rule>) -> LimpValue {
-	LimpValue::Float(float.as_span().as_str().parse::<f64>().unwrap())
+	Float(float.as_span().as_str().parse::<f64>().unwrap())
 }
 
 fn eval_int(int: Pair<Rule>) -> LimpValue {
-	LimpValue::Integer(int.as_span().as_str().parse::<u64>().unwrap())
+	Integer(int.as_span().as_str().parse::<u64>().unwrap())
 }
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
-	LimpValue::Name(name.as_span().as_str().parse().unwrap())
+	Name(name.as_span().as_str().parse().unwrap())
 }
 
 // invocation ::= ( expr_list )
 fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
-	let mut ret = LimpValue::ErrorValue;
+	let mut ret = ErrorValue;
 
 	for inner_pair in invocation.into_inner() {
 		let rators_and_rands = eval_expr_list(inner_pair);
@@ -124,7 +133,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 		let rands = &rators_and_rands[1..rators_and_rands.len()];
 
 		match rator {
-			LimpValue::Name(n) => {
+			Name(n) => {
 				match n.as_str() {
 					"+" => {
 						if rands.len() < 2 {
@@ -154,7 +163,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 
 						for rand in rands {
 							match rand {
-								LimpValue::Integer(i) => {
+								Integer(i) => {
 									if !ret_init {
 										ret_val = *i as f64;
 										ret_init = true;
@@ -162,7 +171,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 										ret_val -= *i as f64;
 									}
 								},
-								LimpValue::Float(f) => {
+								Float(f) => {
 									if !ret_init {
 										ret_val = *f;
 										ret_init = true;
@@ -186,8 +195,8 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 
 						for rand in rands {
 							match rand {
-								LimpValue::Integer(i) => { ret_val *= *i as f64; }
-								LimpValue::Float(f) => { ret_val *= *f; }
+								Integer(i) => { ret_val *= *i as f64; }
+								Float(f) => { ret_val *= *f; }
 								// TODO: implement bindings
 								_ => { panic!("Bad type of {:?} for *!", rand)}
 							}
@@ -205,7 +214,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 
 						for rand in rands {
 							match rand {
-								LimpValue::Integer(i) => {
+								Integer(i) => {
 									if !ret_init {
 										ret_val = *i as f64;
 										ret_init = true;
@@ -213,7 +222,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 										ret_val /= *i as f64;
 									}
 								},
-								LimpValue::Float(f) => {
+								Float(f) => {
 									if !ret_init {
 										ret_val = *f;
 										ret_init = true;
@@ -230,18 +239,32 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"print" => {
 						if rands.len() < 1 {
-							panic!("Rator `+` expects at least 1 rand!");
+							panic!("Rator `print` expects at least 1 rand!");
 						}
 
 						for rand in rands {
 							match rand {
-								LimpValue::Integer(i) => { println!("{}", i) }
+								Integer(i) => { println!("{}", i) }
 								Float(f) => { println!("{}", f) }
 								// TODO: implement bindings
 								_ => { panic!("Bad type of {:?} for print!", rand)}
 							}
 						}
-					}
+					},
+					"exit" => {
+						match rands.len() {
+							0 => exit(0),
+							1 => {
+								match rands[0] {
+									Integer(i) => { exit(i as i32) }
+									Float(f) => { exit(f as i32) }
+									// TODO: implement bindings
+									_ => { panic!("Bad type of {:?} for exit!", rands[0])}
+								}
+							},
+							_ => panic!("Rator `exit` expects at least 1 rand!")
+						}
+					},
 					_ => { panic!("Unexpected rator {:?}!", n.as_str()) }
 				}
 			}
