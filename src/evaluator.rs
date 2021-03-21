@@ -182,7 +182,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									}
 								}
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for -!", rand)}
+								_ => { return ErrorValue(format!("Bad type of {:?} for -!", rand))}
 							}
 						}
 
@@ -233,7 +233,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									}
 								}
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for /!", rand)}
+								_ => { return ErrorValue(format!("Bad type of {:?} for /!", rand))}
 							}
 						}
 
@@ -251,7 +251,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								// TODO: implement bindings
 
 								ErrorValue(s) => { println!("{}", s) }
-								_ => { panic!("Bad type of {:?} for print!", rand)}
+								_ => { return ErrorValue(format!("Bad type of {:?} for print!", rand))}
 							}
 						}
 
