@@ -9,6 +9,6 @@ invocation = { "(" ~ expr_list ~ ")" }
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 boolean = { "true" | "false" }
-name = { "+" | "-" | "*" | "/" | "and" | "print" | "exit" }
+name = { "+" | "-" | "*" | "/" | "and" | "or" | "xor" | "print" | "exit" }
 
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }

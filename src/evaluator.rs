@@ -249,7 +249,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							match rand {
 								Boolean(b) => {
 									if !*b {
-										return Boolean(false)
+										return Boolean(false);
 									}
 								}
 								// TODO: implement bindings
@@ -258,6 +258,47 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 						}
 
 						return Boolean(true);
+					},
+					"or" => {
+						if rands.len() < 2 {
+							panic!("Rator `or` expects at least 2 rands!");
+						}
+
+						for rand in rands {
+							match rand {
+								Boolean(b) => {
+									if *b {
+										return Boolean(true);
+									}
+								}
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for or!", rand)}
+							}
+						}
+
+						return Boolean(false);
+					},
+					"xor" => {
+						if rands.len() < 2 {
+							panic!("Rator `or` expects at least 2 rands!");
+						}
+
+						// Wikipedia: "[xor] may be considered to be an n-ary operator which is true if and only if an odd number of arguments are true"
+						let mut trues = 0;
+
+						for rand in rands {
+							match rand {
+								Boolean(b) => {
+									if *b {
+										trues += 1;
+									}
+								}
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for or!", rand)}
+							}
+						}
+
+						return Boolean(if trues % 2 == 0 { false } else { true });
 					},
 					"print" => {
 						if rands.len() < 1 {
