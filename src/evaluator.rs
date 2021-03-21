@@ -43,9 +43,9 @@ impl PartialEq for LimpValue {
 					VoidValue => true,
 					_ => false
 				}
-			ErrorValue =>
+			ErrorValue(s) =>
 				match other {
-					ErrorValue => true,
+					ErrorValue(s2) => s == s2,
 					_ => false
 				}
 		}
@@ -197,7 +197,7 @@ fn eval_if_form(if_form: Pair<Rule>) -> LimpValue {
 				eval_expr(else_if)
 			}
 		}
-		_ => ErrorValue
+		_ => ErrorValue("Unsupported type in if Rator".to_string())
 	}
 }
 
