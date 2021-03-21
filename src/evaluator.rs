@@ -316,92 +316,92 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"&" => {
 						if rands.len() != 2 {
-							panic!("Rator `&` expects 2 rands!");
+							return ErrorValue("Rator `&` expects 2 rands!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i1) => {
-								return match rands[1] {
+								match rands[1] {
 									Integer(i2) => Integer(i1 & i2),
-									_ => { panic!("Bad type of {:?} for &!", rands[1])}
+									_ => ErrorValue(format!("Bad type of {:?} for &!", rands[1]))
 								}
 							},
-							_ => { panic!("Bad type of {:?} for &!", rands[0])}
+							_ => ErrorValue(format!("Bad type of {:?} for &!", rands[0]))
 						}
 					},
 					"|" => {
 						if rands.len() != 2 {
-							panic!("Rator `|` expects 2 rands!");
+							return ErrorValue("Rator `|` expects 2 rands!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i1) => {
 								return match rands[1] {
 									Integer(i2) => Integer(i1 | i2),
-									_ => { panic!("Bad type of {:?} for |!", rands[1])}
+									_ => ErrorValue(format!("Bad type of {:?} for |!", rands[1]))
 								}
 							},
-							_ => { panic!("Bad type of {:?} for |!", rands[0])}
+							_ => ErrorValue(format!("Bad type of {:?} for |!", rands[0]))
 						}
 					},
 					"^" => {
 						if rands.len() != 2 {
-							panic!("Rator `^` expects 2 rands!");
+							return ErrorValue("Rator `^` expects 2 rands!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i1) => {
 								return match rands[1] {
 									Integer(i2) => Integer(i1 ^ i2),
-									_ => { panic!("Bad type of {:?} for ^!", rands[1])}
+									_ => ErrorValue(format!("Bad type of {:?} for ^!", rands[1]))
 								}
 							},
-							_ => { panic!("Bad type of {:?} for ^!", rands[0])}
+							_ => ErrorValue(format!("Bad type of {:?} for ^!", rands[0]))
 						}
 					},
 					"!" => {
 						if rands.len() != 1 {
-							panic!("Rator `!` expects 2 rands!");
+							return ErrorValue("Rator `!` expects 1 rand!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i) => { return Integer(!i); },
-							_ => { panic!("Bad type of {:?} for !!", rands[0]); }
+							_ => ErrorValue(format!("Bad type of {:?} for !!", rands[0]))
 						}
 					},
 					"<<" => {
 						if rands.len() != 2 {
-							panic!("Rator `<<` expects 2 rands!");
+							return ErrorValue("Rator `<<` expects 2 rands!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i1) => {
 								return match rands[1] {
 									Integer(i2) => Integer(i1 << i2),
-									_ => { panic!("Bad type of {:?} for <<!", rands[1])}
+									_ => ErrorValue(format!("Bad type of {:?} for <<!", rands[1]))
 								}
 							},
-							_ => { panic!("Bad type of {:?} for <<!", rands[0])}
+							_ => ErrorValue(format!("Bad type of {:?} for <<!", rands[0]))
 						}
 					},
 					">>" => {
 						if rands.len() != 2 {
-							panic!("Rator `>>` expects 2 rands!");
+							return ErrorValue("Rator `>>` expects 2 rands!".to_string());
 						}
 
 						match rands[0] {
 							Integer(i1) => {
 								return match rands[1] {
 									Integer(i2) => Integer(i1 >> i2),
-									_ => { panic!("Bad type of {:?} for >>!", rands[1])}
+									_ => ErrorValue(format!("Bad type of {:?} for >>!", rands[1]))
 								}
 							},
-							_ => { panic!("Bad type of {:?} for >>!", rands[0])}
+							_ => ErrorValue(format!("Bad type of {:?} for >>!", rands[0]))
 						}
 					},
 					"and" => {
 						if rands.len() < 2 {
-							panic!("Rator `and` expects at least 2 rands!");
+							return ErrorValue("Rator `and` expects at least 2 rands!".to_string());
 						}
 
 						for rand in rands {
@@ -412,7 +412,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									}
 								}
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for and!", rand)}
+								_ => ErrorValue(format!("Bad type of {:?} for and!", rand))
 							}
 						}
 
@@ -420,7 +420,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"or" => {
 						if rands.len() < 2 {
-							panic!("Rator `or` expects at least 2 rands!");
+							return ErrorValue("Rator `or` expects at least 2 rands!".to_string());
 						}
 
 						for rand in rands {
@@ -431,7 +431,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									}
 								}
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for or!", rand)}
+								_ => ErrorValue(format!("Bad type of {:?} for or!", rand))
 							}
 						}
 
