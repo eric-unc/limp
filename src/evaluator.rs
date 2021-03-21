@@ -9,6 +9,7 @@ pub enum LimpValue {
 	Float(f64),
 	Boolean(bool),
 	Name(String),
+	Binding(String),
 	VoidValue,
 	ErrorValue(String) // accepted an error description
 }
@@ -36,6 +37,11 @@ impl PartialEq for LimpValue {
 			Name(n) =>
 				match other {
 					Name(n2) => *n == *n2,
+					_ => false
+				}
+			Binding(b) => 
+				match other {
+					Binding(b2) => false,
 					_ => false
 				}
 			VoidValue =>
@@ -105,17 +111,17 @@ pub fn eval(tree: Pairs<Rule>){
 }
 
 pub fn eval_with_env(tree: Pairs<Rule>, env: &Environment){
-	eval_program(tree);
+	eval_program(tree, env);
 }
 
 // program ::= expr_list
-fn eval_program(tree: Pairs<Rule>){
+fn eval_program(tree: Pairs<Rule>, env: &Environment){
 	for pair in tree {
 
 		for inner_pair in pair.into_inner() {
 			match inner_pair.as_rule() {
 				Rule::expr_list => {
-					eval_expr_list(inner_pair);
+					eval_expr_list(inner_pair, env);
 				},
 				Rule::EOI => {},
 				_ => {
@@ -127,23 +133,23 @@ fn eval_program(tree: Pairs<Rule>){
 }
 
 // expr_list ::= expr+
-fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
+fn eval_expr_list(exprs: Pair<Rule>, env: &Environment) -> Vec<LimpValue> {
 	let mut ret = Vec::new();
 
 	for expr in exprs.into_inner() {
-		ret.push(eval_expr(expr));
+		ret.push(eval_expr(expr, env));
 	}
 
 	ret
 }
 
 // expr :: atom | if_form | invocation
-fn eval_expr(expr: Pair<Rule>) -> LimpValue {
+fn eval_expr(expr: Pair<Rule>, env: &Environment) -> LimpValue {
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
 			Rule::atom => return eval_atom(inner_pair),
-			Rule::if_form => return eval_if_form(inner_pair),
-			Rule::invocation => return eval_invocation(inner_pair),
+			Rule::if_form => return eval_if_form(inner_pair, env),
+			Rule::invocation => return eval_invocation(inner_pair, env),
 			_ => unreachable!()
 		}
 	}
@@ -158,6 +164,7 @@ fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 			Rule::int => return eval_int(inner_pair),
 			Rule::boolean => return eval_boolean(inner_pair),
 			Rule::name => return eval_name(inner_pair),
+			Rule::binding => return eval_binding(inner_pair),
 			_ => unreachable!()
 		}
 	}
@@ -194,11 +201,18 @@ fn eval_name(name: Pair<Rule>) -> LimpValue {
 	}
 }
 
+fn eval_binding(binding: Pair<Rule>) -> LimpValue {
+	match binding.as_span().as_str().parse() {
+		Ok(value) => { return Binding(value) }
+		Err(err) => { return ErrorValue(err.to_string()) }
+	}
+}
+
 // if_form ::= (if expr expr expr)
-fn eval_if_form(if_form: Pair<Rule>) -> LimpValue {
+fn eval_if_form(if_form: Pair<Rule>, env: &Environment) -> LimpValue {
 	let mut iter = if_form.into_inner();
 
-	let cond = eval_expr(iter.next().unwrap());
+	let cond = eval_expr(iter.next().unwrap(), env);
 
 	let if_true = iter.next().unwrap();
 	let else_if = iter.next().unwrap();
@@ -206,9 +220,9 @@ fn eval_if_form(if_form: Pair<Rule>) -> LimpValue {
 	match cond {
 		Boolean(b) => {
 			if b {
-				eval_expr(if_true)
+				eval_expr(if_true, env)
 			} else {
-				eval_expr(else_if)
+				eval_expr(else_if, env)
 			}
 		}
 		_ => ErrorValue("Unsupported type in if Rator".to_string())
@@ -216,9 +230,9 @@ fn eval_if_form(if_form: Pair<Rule>) -> LimpValue {
 }
 
 // invocation ::= ( expr_list )
-fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
+fn eval_invocation(invocation: Pair<Rule>, env: &Environment) -> LimpValue {
 	for inner_pair in invocation.into_inner() {
-		let rators_and_rands = eval_expr_list(inner_pair);
+		let rators_and_rands = eval_expr_list(inner_pair, env);
 
 		let rator = &rators_and_rands[0];
 		let rands = &rators_and_rands[1..rators_and_rands.len()];
@@ -518,6 +532,34 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								_ => { return ErrorValue(format!("Bad type of {:?} for print!", rand))}
 							}
 						}
+
+						return VoidValue;
+					},
+					"set" => {
+						if rands.len() != 2 {
+							return ErrorValue("Rator `set` expects 2 rands!".to_string());
+						}
+
+						let mut name = String::new();
+							match &rands[0] {
+								Binding(b) => {
+										name = b.to_string();
+								}
+								_ => { return ErrorValue("Rator `set` expects first rand to be a binding!".to_string()) }
+							}
+
+							match &rands[1] {
+								Integer(i) => {
+									env.add_binding(name, Integer(*i))
+								}
+								Float(f) =>  {
+									env.add_binding(name, Float(*f))
+								}
+								Boolean(b) => {
+									env.add_binding(name, Boolean(*b))
+								}
+								_ => { return ErrorValue(format!("Bad type of {:?} for set!", rands[1]))}
+							}
 
 						return VoidValue;
 					},
