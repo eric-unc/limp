@@ -36,7 +36,7 @@ fn load_and_interpret(file_name: &String) {
 }
 
 fn repl() {
-	let env = Environment::new();
+	let mut env = Environment::new();
 
 	loop {
 		print!(">>> ");
@@ -54,7 +54,7 @@ fn repl() {
 
 		match parse_tree {
 			Ok(tree) => {
-				eval_with_env(tree, &env);
+				eval_with_env(tree, &mut env);
 			},
 			Err(e) => {
 				println!("{}", e)

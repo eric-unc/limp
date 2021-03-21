@@ -107,15 +107,15 @@ impl Environment {
 }
 
 pub fn eval(tree: Pairs<Rule>){
-	eval_with_env(tree, &Environment::new());
+	eval_with_env(tree, &mut Environment::new());
 }
 
-pub fn eval_with_env(tree: Pairs<Rule>, env: &Environment){
+pub fn eval_with_env(tree: Pairs<Rule>, env: &mut Environment){
 	eval_program(tree, env);
 }
 
 // program ::= expr_list
-fn eval_program(tree: Pairs<Rule>, env: &Environment){
+fn eval_program(tree: Pairs<Rule>, env: &mut Environment){
 	for pair in tree {
 
 		for inner_pair in pair.into_inner() {
@@ -133,7 +133,7 @@ fn eval_program(tree: Pairs<Rule>, env: &Environment){
 }
 
 // expr_list ::= expr+
-fn eval_expr_list(exprs: Pair<Rule>, env: &Environment) -> Vec<LimpValue> {
+fn eval_expr_list(exprs: Pair<Rule>, env: &mut Environment) -> Vec<LimpValue> {
 	let mut ret = Vec::new();
 
 	for expr in exprs.into_inner() {
@@ -144,7 +144,7 @@ fn eval_expr_list(exprs: Pair<Rule>, env: &Environment) -> Vec<LimpValue> {
 }
 
 // expr :: atom | if_form | invocation
-fn eval_expr(expr: Pair<Rule>, env: &Environment) -> LimpValue {
+fn eval_expr(expr: Pair<Rule>, env: &mut Environment) -> LimpValue {
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
 			Rule::atom => return eval_atom(inner_pair),
@@ -209,7 +209,7 @@ fn eval_binding(binding: Pair<Rule>) -> LimpValue {
 }
 
 // if_form ::= (if expr expr expr)
-fn eval_if_form(if_form: Pair<Rule>, env: &Environment) -> LimpValue {
+fn eval_if_form(if_form: Pair<Rule>, env: &mut Environment) -> LimpValue {
 	let mut iter = if_form.into_inner();
 
 	let cond = eval_expr(iter.next().unwrap(), env);
@@ -230,7 +230,7 @@ fn eval_if_form(if_form: Pair<Rule>, env: &Environment) -> LimpValue {
 }
 
 // invocation ::= ( expr_list )
-fn eval_invocation(invocation: Pair<Rule>, env: &Environment) -> LimpValue {
+fn eval_invocation(invocation: Pair<Rule>, env: &mut Environment) -> LimpValue {
 	for inner_pair in invocation.into_inner() {
 		let rators_and_rands = eval_expr_list(inner_pair, env);
 
