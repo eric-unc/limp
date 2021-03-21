@@ -1,4 +1,4 @@
-# limp
+# Limp
 **Limp** is a Lisp-like programming language implemented in Rust. Made for [PackHacks 2021](https://ncsupackhacks.org/).
 
 <img src="limp_logo.png" width="200" alt="The Limp logo.">

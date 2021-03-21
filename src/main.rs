@@ -47,7 +47,7 @@ fn repl() {
 		line = line.trim().to_string();
 
 		if line.is_empty() {
-			return;
+			continue;
 		}
 
 		let parse_tree = LimpParser::parse(Rule::program, &line);
