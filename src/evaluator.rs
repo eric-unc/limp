@@ -9,7 +9,7 @@ pub enum LimpValue {
 	Float(f64),
 	Name(String),
 	VoidValue,
-	ErrorValue
+	ErrorValue(String) // accepted an error description
 }
 
 use crate::evaluator::LimpValue::*;
@@ -106,15 +106,24 @@ fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 }
 
 fn eval_float(float: Pair<Rule>) -> LimpValue {
-	Float(float.as_span().as_str().parse::<f64>().unwrap())
+	match float.as_span().as_str().parse::<f64>() {
+		Ok(value) => { return Float(value) }
+		Err(err) => { return ErrorValue(err.to_string()) }
+	}
 }
 
 fn eval_int(int: Pair<Rule>) -> LimpValue {
-	Integer(int.as_span().as_str().parse::<i64>().unwrap())
+	match int.as_span().as_str().parse::<i64>() {
+		Ok(value) => { return Integer(value) }
+		Err(err) => { return ErrorValue(err.to_string()) }
+	}
 }
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
-	Name(name.as_span().as_str().parse().unwrap())
+	match name.as_span().as_str().parse() {
+		Ok(value) => { return Name(value) }
+		Err(err) => { return ErrorValue(err.to_string()) }
+	}
 }
 
 // invocation ::= ( expr_list )
