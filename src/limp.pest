@@ -16,7 +16,8 @@ float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 boolean = { "true" | "false" }
 name = { num_procedures | boolean_procedures | void_procedures }
 
-num_procedures = _{ "+" | "-" | "*" | "/" }
+num_procedures = _{ "+" | "-" | "*" | "/" | bitwise_procedures }
+bitwise_procedures = _{ "&" | "|" | "^" | "!" | "<<" | ">>" }
 boolean_procedures = _{ "and" | "or" | "xor" | "not" | "==" | "!=" }
 void_procedures = _{ "print" | "exit" }
 
