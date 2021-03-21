@@ -7,18 +7,18 @@ Limp is a Lisp-like programming language implemented in Rust. Made for [PackHack
   * [ ] Without parameter: functions as REPL.
 * PL construction: grammar
   * Value types
-    * [ ] Integers
-    * [ ] Floats
+    * [x] Integers
+    * [x] Floats
     * [ ] Strings
     * [ ] Boolean
     * [ ] Lists
   * Procedures
     * Built-in:
-      * [ ] `+`
+      * [x] `+`
       * [ ] `-`
       * [ ] `*`
       * [ ] `/`
-      * [ ] `print` (maybe separated by type)
+      * [x] `print`
       * Many more, obviously
     * [ ] Custom
 * PL construction: evaluation

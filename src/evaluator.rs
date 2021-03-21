@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use crate::Rule;
 use std::ptr::null;
 use std::fmt;
+use crate::evaluator::LimpValue::Float;
 
 #[derive(Debug)]
 pub enum LimpValue {
@@ -52,7 +53,6 @@ pub fn evaluate(tree: Pairs<Rule>){
 				},
 				Rule::EOI => {},
 				_ => {
-					println!("{:?}", inner_pair.as_rule());
 					unreachable!();
 				}
 			}
@@ -98,8 +98,6 @@ fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 		}
 	}
 
-	println!("{:?}", ret);
-
 	ret
 }
 
@@ -115,6 +113,67 @@ fn eval_name(name: Pair<Rule>) -> LimpValue {
 	LimpValue::Name(name.as_span().as_str().parse().unwrap())
 }
 
+// invocation ::= ( expr_list )
 fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
-	LimpValue::ErrorValue // TODO
+	let mut ret = LimpValue::ErrorValue;
+
+	for inner_pair in invocation.into_inner() {
+		let rators_and_rands = eval_expr_list(inner_pair);
+
+		let rator = &rators_and_rands[0];
+		let rands = &rators_and_rands[1..rators_and_rands.len()];
+
+		match rator {
+			LimpValue::Name(n) => {
+				match n.as_str() {
+					"+" => {
+						if rands.len() < 2 {
+							panic!("Rator `+` expects at least 2 rands!");
+						}
+
+						let mut ret_val = 0.0;
+
+						for rand in rands {
+							match rand {
+								LimpValue::Integer(i) => { ret_val += *i as f64; }
+								LimpValue::Float(f) => { ret_val += *f; }
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for +!", rand)}
+							}
+						}
+
+						ret = f_to_i_if_possible(ret_val);
+					},
+					"print" => {
+						if rands.len() < 1 {
+							panic!("Rator `+` expects at least 1 rand!");
+						}
+
+						for rand in rands {
+							match rand {
+								LimpValue::Integer(i) => { println!("{}", i) }
+								Float(f) => { println!("{}", f) }
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for print!", rand)}
+							}
+						}
+					}
+					_ => { panic!("Unexpected rator {:?}!", n.as_str()) }
+				}
+			}
+			_ => { panic!("Unexpected rator {:?}!", &rators_and_rands[0]) }
+		}
+	}
+
+	ret
+}
+
+fn f_to_i_if_possible(float: f64) -> LimpValue {
+	let int = float as u64;
+
+	if float != int as f64 {
+		LimpValue::Float(float)
+	} else {
+		LimpValue::Integer(int)
+	}
 }
