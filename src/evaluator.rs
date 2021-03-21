@@ -249,6 +249,8 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								Integer(i) => { println!("{}", i) }
 								Float(f) => { println!("{}", f) }
 								// TODO: implement bindings
+
+								ErrorValue(s) => { println!("{}", s) }
 								_ => { panic!("Bad type of {:?} for print!", rand)}
 							}
 						}
