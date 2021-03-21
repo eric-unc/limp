@@ -14,11 +14,12 @@ if_form = { "(if" ~ expr ~ expr ~ expr ~ ")" }
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 boolean = { "true" | "false" }
-name = { num_procedures | boolean_procedures | void_procedures }
+name = { num_procedures | boolean_procedures | binding_procedures | void_procedures }
 
 num_procedures = _{ "+" | "-" | "*" | "/" | bitwise_procedures }
 bitwise_procedures = _{ "&" | "|" | "^" | "!" | "<<" | ">>" }
 boolean_procedures = _{ "and" | "or" | "xor" | "not" | "==" | "!=" }
+binding_procedures = _{ "set" }
 void_procedures = _{ "print" | "exit" }
 
 binding = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC+)? }
