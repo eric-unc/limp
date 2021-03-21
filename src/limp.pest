@@ -10,4 +10,4 @@ int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 name = { "+" | "-" | "*" | "/" | "print" | "exit" }
 
-WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }
