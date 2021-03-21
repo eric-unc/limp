@@ -144,6 +144,90 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 
 						ret = f_to_i_if_possible(ret_val);
 					},
+					"-" => {
+						if rands.len() < 2 {
+							panic!("Rator `-` expects at least 2 rands!");
+						}
+
+						let mut ret_val = 0.0;
+						let mut ret_init = false;
+
+						for rand in rands {
+							match rand {
+								LimpValue::Integer(i) => {
+									if !ret_init {
+										ret_val = *i as f64;
+										ret_init = true;
+									} else {
+										ret_val -= *i as f64;
+									}
+								},
+								LimpValue::Float(f) => {
+									if !ret_init {
+										ret_val = *f;
+										ret_init = true;
+									} else {
+										ret_val -= *f;
+									}
+								}
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for -!", rand)}
+							}
+						}
+
+						ret = f_to_i_if_possible(ret_val);
+					},
+					"*" => {
+						if rands.len() < 2 {
+							panic!("Rator `*` expects at least 2 rands!");
+						}
+
+						let mut ret_val = 1.0;
+
+						for rand in rands {
+							match rand {
+								LimpValue::Integer(i) => { ret_val *= *i as f64; }
+								LimpValue::Float(f) => { ret_val *= *f; }
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for *!", rand)}
+							}
+						}
+
+						ret = f_to_i_if_possible(ret_val);
+					},
+					"/" => {
+						if rands.len() < 2 {
+							panic!("Rator `/` expects at least 2 rands!");
+						}
+
+						let mut ret_val = 0.0;
+						let mut ret_init = false;
+
+						for rand in rands {
+							match rand {
+								LimpValue::Integer(i) => {
+									if !ret_init {
+										ret_val = *i as f64;
+										ret_init = true;
+									} else {
+										ret_val /= *i as f64;
+									}
+								},
+								LimpValue::Float(f) => {
+									if !ret_init {
+										ret_val = *f;
+										ret_init = true;
+									} else {
+										ret_val /= *f;
+									}
+								}
+								// TODO: implement bindings
+								_ => { panic!("Bad type of {:?} for /!", rand)}
+							}
+						}
+
+						ret = f_to_i_if_possible(ret_val);
+					},
 					"print" => {
 						if rands.len() < 1 {
 							panic!("Rator `+` expects at least 1 rand!");

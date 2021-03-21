@@ -17,7 +17,7 @@ mod tests;
 mod evaluator;
 
 fn main() {
-	let p = LimpParser::parse(Rule::program, "(print (+ 4 5) 6)");
+	let p = LimpParser::parse(Rule::program, "(print (+ 1 2) (- 1 2) (* 3 4) (/ 8 2))");
 	//println!("{:?}", p);
 	evaluator::evaluate(p.unwrap());
 	exit(0); // temp
