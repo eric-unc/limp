@@ -8,6 +8,6 @@ invocation = { "(" ~ expr_list ~ ")" }
 // Atoms
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
-name = { "+" | "-" | "*" | "/" | "print" }
+name = { "+" | "-" | "*" | "/" | "print" | "exit" }
 
 WHITESPACE = _{ " " | "\t" }
