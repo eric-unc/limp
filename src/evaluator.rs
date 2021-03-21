@@ -249,9 +249,18 @@ fn eval_invocation(invocation: Pair<Rule>, env: &mut Environment) -> LimpValue {
 
 						for rand in rands {
 							match rand {
-								LimpValue::Integer(i) => { ret_val += *i as f64; }
-								LimpValue::Float(f) => { ret_val += *f; }
-								// TODO: implement bindings
+								Integer(i) => { ret_val += *i as f64; }
+								Float(f) => { ret_val += *f; }
+								
+								Binding(b) => {
+									let val = env.get_binding(b.to_string());
+									match val {
+										Integer(i) => { ret_val += i as f64; }
+										Float(f) => { ret_val += f; }
+										_ => { return ErrorValue(format!("Bad type of {:?} for +!", rand)) }
+									}
+								}
+
 								_ => { return ErrorValue(format!("Bad type of {:?} for +!", rand)) }
 							}
 						}
