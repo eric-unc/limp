@@ -139,7 +139,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 				match n.as_str() {
 					"+" => {
 						if rands.len() < 2 {
-							panic!("Rator `+` expects at least 2 rands!");
+							return ErrorValue("Rator `+` expects at least 2 rands!".to_string());
 						}
 
 						let mut ret_val = 0.0;
@@ -149,7 +149,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								LimpValue::Integer(i) => { ret_val += *i as f64; }
 								LimpValue::Float(f) => { ret_val += *f; }
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for +!", rand)}
+								_ => { return ErrorValue(format!("Bad type of {:?} for +!", rand)) }
 							}
 						}
 
@@ -157,7 +157,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"-" => {
 						if rands.len() < 2 {
-							panic!("Rator `-` expects at least 2 rands!");
+							return ErrorValue("Rator `-` expects at least 2 rands!".to_string());
 						}
 
 						let mut ret_val = 0.0;
@@ -190,7 +190,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"*" => {
 						if rands.len() < 2 {
-							panic!("Rator `*` expects at least 2 rands!");
+							return ErrorValue("Rator `*` expects at least 2 rands!".to_string());
 						}
 
 						let mut ret_val = 1.0;
@@ -200,7 +200,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								Integer(i) => { ret_val *= *i as f64; }
 								Float(f) => { ret_val *= *f; }
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for *!", rand)}
+								_ => { return ErrorValue(format!("Bad type of {:?} for *!", rand))}
 							}
 						}
 
@@ -208,7 +208,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"/" => {
 						if rands.len() < 2 {
-							panic!("Rator `/` expects at least 2 rands!");
+							return ErrorValue("Rator `/` expects at least 2 rands!".to_string());
 						}
 
 						let mut ret_val = 0.0;
@@ -241,7 +241,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 					},
 					"print" => {
 						if rands.len() < 1 {
-							panic!("Rator `print` expects at least 1 rand!");
+							return ErrorValue("Rator `print` expects at least 1 rand!".to_string());
 						}
 
 						for rand in rands {
@@ -263,16 +263,16 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 									Integer(i) => { exit(i as i32) }
 									Float(f) => { exit(f as i32) }
 									// TODO: implement bindings
-									_ => { panic!("Bad type of {:?} for exit!", rands[0])}
+									_ => { return ErrorValue(format!("Bad type of {:?} for exit!", rands[0])) }
 								}
 							},
-							_ => panic!("Rator `exit` expects at least 1 rand!")
+							_ => return ErrorValue("Rator `exit` expects at least 1 rand!".to_string())
 						}
 					},
-					_ => { panic!("Unexpected rator {:?}!", n.as_str()) }
+					_ => { return ErrorValue(format!("Unexpected rator {:?}!", n.as_str())) }
 				}
 			}
-			_ => { panic!("Unexpected rator {:?}!", &rators_and_rands[0]) }
+			_ => { return ErrorValue(format!("Unexpected rator {:?}!", &rators_and_rands[0])) }
 		}
 	}
 
