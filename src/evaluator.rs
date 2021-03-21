@@ -8,6 +8,7 @@ pub enum LimpValue {
 	Integer(u64),
 	Float(f64),
 	Name(String),
+	VoidValue,
 	ErrorValue
 }
 
@@ -243,7 +244,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							}
 						}
 
-						return ErrorValue;
+						return VoidValue;
 					},
 					"exit" => {
 						match rands.len() {
