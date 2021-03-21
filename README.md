@@ -39,12 +39,13 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 ### Built-in procedures
 | Name | Description
 | :------ | :------
-| `+` | Adds all rands given. Requires at least two rands.
-| `-` | Subtracts the first rand from the remaining rands. Requires at least two rands.
-| `*` | Multiplies all rands given. Requires at least two rands.
-| `/` | Divides the first rand from the remaining rands. Requires at least two rands.
-| `print` | Prints (on new lines) each rand. Requires at least one rand.
-| `exit` | Exits the program with a 0 status. With an optional rand, exits with that status.
+| `+` | Adds all rands given. Requires at least two rands (int/float).
+| `-` | Subtracts the first rand from the remaining rands. Requires at least two rands (int/float).
+| `*` | Multiplies all rands given. Requires at least two rands (int/float).
+| `/` | Divides the first rand from the remaining rands. Requires at least two rands (int/float).
+| `and` | Ands all rands given. Requires at least two rands (boolean).
+| `print` | Prints (on new lines) each rand. Requires at least one rand (int/float/boolean).
+| `exit` | Exits the program with a 0 status. With an optional rand, exits with that status  (int/float).
 
 ## Technologies used
 * [Rust](https://github.com/rust-lang/rust)
