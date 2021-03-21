@@ -62,6 +62,34 @@ fn parse_invocation(){
 	}
 }
 
+#[test]
+fn parse_if_form(){
+	parses_to! {
+		parser: LimpParser,
+		input: "(if true 1 0)",
+		rule: Rule::if_form,
+		tokens: [
+			if_form(0, 13, [
+				expr(4, 8, [
+					atom(4, 8, [
+						boolean(4, 8)
+					])]
+				),
+				expr(9, 10, [
+					atom(9, 10, [
+						int(9, 10)
+					])]
+				),
+				expr(11, 12, [
+					atom(11, 12, [
+						int(11, 12)
+					])]
+				)
+			])
+		]
+	}
+}
+
 //// Atoms
 
 #[test]
