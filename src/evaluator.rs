@@ -1,8 +1,6 @@
 use pest::iterators::{Pairs, Pair};
 use std::collections::HashMap;
 use crate::Rule;
-use std::ptr::null;
-use std::fmt;
 use std::process::exit;
 
 #[derive(Debug)]
