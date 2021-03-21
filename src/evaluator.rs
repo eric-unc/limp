@@ -13,19 +13,6 @@ pub enum LimpValue {
 	ErrorValue
 }
 
-/*impl fmt::Debug for LimpValue {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		f.debug_struct("LimpValue").field(
-		match self {
-			LimpValue::Integer(_) => "Integer",
-			LimpValue::Float(_) => "Float",
-			LimpValue::Name(_) => "Name",
-			Error => {}
-		}, "5").finish()
-		//f.debug_struct("LimpValue").finish()
-	}
-}*/
-
 type Scope = HashMap<String, LimpValue>;
 type Bindings = Vec<Scope>;
 
@@ -56,14 +43,9 @@ impl Environment {
 
 // program ::= expr_list
 pub fn evaluate(tree: Pairs<Rule>){
-	println!("{:?}", tree);
-
 	for pair in tree {
-		//println!("{:?}", pair);
 
 		for inner_pair in pair.into_inner() {
-			//println!("{:?}", inner_pair);
-
 			match inner_pair.as_rule() {
 				Rule::expr_list => {
 					eval_expr_list(inner_pair);
@@ -80,8 +62,6 @@ pub fn evaluate(tree: Pairs<Rule>){
 
 // expr_list ::= expr+
 fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
-	println!("expr list time!!!");
-	println!("{:?}", exprs);
 	let mut ret = Vec::new();
 
 	for expr in exprs.into_inner() {
@@ -94,8 +74,6 @@ fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
 // expr :: atom | invocation
 fn eval_expr(expr: Pair<Rule>) -> LimpValue {
 	let mut ret = LimpValue::ErrorValue; // TODO: clean this up
-	println!("expr time!!!");
-	println!("{:?}", expr);
 
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
@@ -109,19 +87,7 @@ fn eval_expr(expr: Pair<Rule>) -> LimpValue {
 }
 // atom ::= float | int | name
 fn eval_atom(atom: Pair<Rule>) -> LimpValue {
-	println!("atom time!!!");
-	println!("{:?}", atom);
-
 	let mut ret = LimpValue::ErrorValue;
-
-	/*for pair in atom {
-		match pair.as_rule() {
-			Rule::float => ret = eval_float(pair.into_inner()),
-			Rule::int => ret = eval_int(pair.into_inner()),
-			Rule::name => ret = eval_name(pair.into_inner()),
-			_ => unreachable!()
-		}
-	}*/
 
 	for inner_pair in atom.into_inner() {
 		match inner_pair.as_rule() {
@@ -138,17 +104,15 @@ fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 }
 
 fn eval_float(float: Pair<Rule>) -> LimpValue {
-	LimpValue::ErrorValue // TODO
+	LimpValue::Float(float.as_span().as_str().parse::<f64>().unwrap())
 }
 
 fn eval_int(int: Pair<Rule>) -> LimpValue {
-	println!("int time!!!");
-	println!("{:?}", int);
-	LimpValue::ErrorValue // TODO
+	LimpValue::Integer(int.as_span().as_str().parse::<u64>().unwrap())
 }
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
-	LimpValue::ErrorValue // TODO
+	LimpValue::Name(name.as_span().as_str().parse().unwrap())
 }
 
 fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
