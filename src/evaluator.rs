@@ -123,11 +123,12 @@ fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
 	ret
 }
 
-// expr :: atom | invocation
+// expr :: atom | if_form | invocation
 fn eval_expr(expr: Pair<Rule>) -> LimpValue {
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
 			Rule::atom => return eval_atom(inner_pair),
+			Rule::if_form => return eval_if_form(inner_pair),
 			Rule::invocation => return eval_invocation(inner_pair),
 			_ => unreachable!()
 		}
@@ -168,6 +169,27 @@ fn eval_boolean(boolean: Pair<Rule>) -> LimpValue {
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
 	Name(name.as_span().as_str().parse().unwrap())
+}
+
+// if_form ::= (if expr expr expr)
+fn eval_if_form(if_form: Pair<Rule>) -> LimpValue {
+	let mut iter = if_form.into_inner();
+
+	let cond = eval_expr(iter.next().unwrap());
+
+	let if_true = iter.next().unwrap();
+	let else_if = iter.next().unwrap();
+
+	match cond {
+		Boolean(b) => {
+			if b {
+				eval_expr(if_true)
+			} else {
+				eval_expr(else_if)
+			}
+		}
+		_ => ErrorValue
+	}
 }
 
 // invocation ::= ( expr_list )

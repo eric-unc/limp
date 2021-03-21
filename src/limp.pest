@@ -8,7 +8,7 @@ invocation = { "(" ~ expr_list ~ ")" }
 
 // Special forms
 // These are separate from invocation because they need to use normal-order evaluation rather than applicative-order evaluation.
-if_form = { "(if" ~ expr ~ expr ~ expr? ~ ")" }
+if_form = { "(if" ~ expr ~ expr ~ expr ~ ")" }
 
 // Atoms
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
