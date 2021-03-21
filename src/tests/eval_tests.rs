@@ -11,3 +11,9 @@ fn eval_add(){
 	let tree = LimpParser::parse(Rule::program, "(+ 5 9)").unwrap();
 	eval(tree);
 }
+
+#[test]
+fn eval_with_whitespace(){
+	let tree = LimpParser::parse(Rule::program, "(+ 5 9)\n").unwrap();
+	eval(tree);
+}
