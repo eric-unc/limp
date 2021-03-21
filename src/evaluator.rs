@@ -81,8 +81,9 @@ impl Environment {
 	}
 
 	pub fn add_binding(&mut self, name: String, val: LimpValue){
-		// TODO: lol this doesn't work
-		//self.bindings.last().unwrap().insert(name, val);
+		let len = self.bindings.len();
+
+		self.bindings[len-1].insert(name, val);
 	}
 
 	pub fn get_binding(&mut self, name: String) -> LimpValue {
