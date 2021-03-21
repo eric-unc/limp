@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::Rule;
 use std::process::exit;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub enum LimpValue {
 	Integer(i64),
 	Float(f64),
@@ -48,7 +48,7 @@ impl Environment {
 		for i in len..0 {
 			if self.bindings[i].contains_key(&name) {
 				let value = self.bindings[i].get(&name).unwrap();
-				return *value;
+				return value.clone();
 			}
 		}
 
