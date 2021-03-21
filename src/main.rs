@@ -3,10 +3,10 @@ extern crate pest;
 extern crate pest_derive;
 
 use pest::Parser;
-use std::env;
-use std::io::{self, Write};
+use std::{env, fs};
+use std::io::{self, Write, Error};
 use std::process::exit;
-use crate::evaluator::{Environment, eval_with_env};
+use crate::evaluator::{Environment, eval_with_env, eval};
 
 #[derive(Parser)]
 #[grammar = "limp.pest"]
@@ -18,11 +18,6 @@ mod tests;
 mod evaluator;
 
 fn main() {
-	//let p = LimpParser::parse(Rule::program, "(print (+ 1 2) (- 1 2) (* 3 4) (/ 8 2))");
-	//println!("{:?}", p);
-	//evaluator::evaluate(p.unwrap());
-	//exit(0); // temp
-
 	let args: Vec<String> = env::args().collect();
 
 	if args.len() >= 2 {
@@ -33,7 +28,12 @@ fn main() {
 }
 
 fn load_and_interpret(file_name: &String) {
-	// TODO
+	let script = fs::read_to_string(file_name);
+
+	match script {
+		Ok(s) => { eval(LimpParser::parse(Rule::program, &s).unwrap()); }
+		Err(e) => { panic!("{:?}", e)}
+	}
 }
 
 fn repl() {
