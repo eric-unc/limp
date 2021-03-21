@@ -2,7 +2,7 @@
 program = { SOI ~ expr_list ~ EOI }
 expr_list = { expr+ }
 expr = { atom | special_forms | invocation }
-atom = { float | int | boolean | name }
+atom = { float | int | boolean | name | binding }
 special_forms = _{ if_form }
 invocation = { "(" ~ expr_list ~ ")" }
 
@@ -20,5 +20,7 @@ num_procedures = _{ "+" | "-" | "*" | "/" | bitwise_procedures }
 bitwise_procedures = _{ "&" | "|" | "^" | "!" | "<<" | ">>" }
 boolean_procedures = _{ "and" | "or" | "xor" | "not" | "==" | "!=" }
 void_procedures = _{ "print" | "exit" }
+
+binding = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC+)? }
 
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }
