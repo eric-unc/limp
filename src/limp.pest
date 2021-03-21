@@ -9,6 +9,10 @@ invocation = { "(" ~ expr_list ~ ")" }
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 boolean = { "true" | "false" }
-name = { "+" | "-" | "*" | "/" | "and" | "or" | "xor" | "not" | "print" | "exit" }
+name = { num_procedures | boolean_procedures | void_procedures }
+
+num_procedures = _{ "+" | "-" | "*" | "/" }
+boolean_procedures = _{ "and" | "or" | "xor" | "not" | "==" | "!=" }
+void_procedures = _{ "print" | "exit" }
 
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }

@@ -13,6 +13,49 @@ pub enum LimpValue {
 	ErrorValue
 }
 
+impl PartialEq for LimpValue {
+	fn eq(&self, other: &Self) -> bool {
+		match self {
+			Integer(i) =>
+				match other {
+					Integer(i2) => *i == *i2,
+					Float(f) => *i as f64 == *f,
+					_ => false
+				}
+			Float(f) =>
+				match other {
+					Integer(i) => *f == *i as f64,
+					Float(f2) => *f == *f2,
+					_ => false
+				}
+			Boolean(b) =>
+				match other {
+					Boolean(b2) => *b == *b2,
+					_ => false
+				}
+			Name(n) =>
+				match other {
+					Name(n2) => *n == *n2,
+					_ => false
+				}
+			VoidValue =>
+				match other {
+					VoidValue => true,
+					_ => false
+				}
+			ErrorValue =>
+				match other {
+					ErrorValue => true,
+					_ => false
+				}
+		}
+	}
+
+	fn ne(&self, other: &Self) -> bool {
+		!self.eq(other)
+	}
+}
+
 use crate::evaluator::LimpValue::*;
 
 type Scope = HashMap<String, LimpValue>;
@@ -309,11 +352,25 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							match rand {
 								Boolean(b) => { return Boolean(!*b); }
 								// TODO: implement bindings
-								_ => { panic!("Bad type of {:?} for xor!", rand)}
+								_ => { panic!("Bad type of {:?} for not!", rand)}
 							}
 						}
 
 						unreachable!();
+					},
+					"==" => {
+						if rands.len() != 2 {
+							panic!("Rator `==` only supports 2 rands!");
+						}
+
+						return Boolean(rands[0] == rands[1]);
+					},
+					"!=" => {
+						if rands.len() != 2 {
+							panic!("Rator `!=` only supports 2 rands!");
+						}
+
+						return Boolean(rands[0] != rands[1]);
 					},
 					"print" => {
 						if rands.len() < 1 {
