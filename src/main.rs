@@ -17,7 +17,7 @@ mod tests;
 mod evaluator;
 
 fn main() {
-	let p = LimpParser::parse(Rule::program, "5");
+	let p = LimpParser::parse(Rule::program, "5 4");
 	//println!("{:?}", p);
 	evaluator::evaluate(p.unwrap());
 	exit(0); // temp
