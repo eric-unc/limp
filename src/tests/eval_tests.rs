@@ -31,6 +31,12 @@ fn eval_minus() {
 }
 
 #[test]
+fn eval_minus_multiple() {
+	let tree = LimpParser::parse(Rule::program, "(- 10 4 2)").unwrap();
+	eval(tree);
+}
+
+#[test]
 fn eval_with_whitespace(){
 	let tree = LimpParser::parse(Rule::program, "   (+\t5\r\n9)\n").unwrap();
 	eval(tree);
