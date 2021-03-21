@@ -40,21 +40,23 @@ fn parse_invocation(){
 		rule: Rule::invocation,
 		tokens: [
 			invocation(0, 7, [
-				expr(1, 2, [
-					atom(1, 2, [
-						name(1, 2),
-					])]
-				),
-				expr(3, 4, [
-					atom(3, 4, [
-						int(3, 4),
-					])]
-				),
-				expr(5, 6, [
-					atom(5, 6, [
-						int(5, 6),
-					])]
-				)
+				expr_list(1, 6, [
+					expr(1, 2, [
+						atom(1, 2, [
+							name(1, 2),
+						])]
+					),
+					expr(3, 4, [
+						atom(3, 4, [
+							int(3, 4),
+						])]
+					),
+					expr(5, 6, [
+						atom(5, 6, [
+							int(5, 6),
+						])]
+					)
+				])
 			])
 		]
 	}
