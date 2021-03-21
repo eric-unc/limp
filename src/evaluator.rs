@@ -7,6 +7,7 @@ use std::process::exit;
 pub enum LimpValue {
 	Integer(u64),
 	Float(f64),
+	Boolean(bool),
 	Name(String),
 	VoidValue,
 	ErrorValue
@@ -91,12 +92,13 @@ fn eval_expr(expr: Pair<Rule>) -> LimpValue {
 
 	unreachable!()
 }
-// atom ::= float | int | name
+// atom ::= float | int | bool | name
 fn eval_atom(atom: Pair<Rule>) -> LimpValue {
 	for inner_pair in atom.into_inner() {
 		match inner_pair.as_rule() {
 			Rule::float => return eval_float(inner_pair),
 			Rule::int => return eval_int(inner_pair),
+			Rule::boolean => return eval_boolean(inner_pair),
 			Rule::name => return eval_name(inner_pair),
 			_ => unreachable!()
 		}
@@ -111,6 +113,14 @@ fn eval_float(float: Pair<Rule>) -> LimpValue {
 
 fn eval_int(int: Pair<Rule>) -> LimpValue {
 	Integer(int.as_span().as_str().parse::<u64>().unwrap())
+}
+
+fn eval_boolean(boolean: Pair<Rule>) -> LimpValue {
+	match boolean.as_span().as_str() {
+		"true" => Boolean(true),
+		"false" => Boolean(false),
+		_ => panic!()
+	}
 }
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
@@ -239,6 +249,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							match rand {
 								Integer(i) => { println!("{}", i) }
 								Float(f) => { println!("{}", f) }
+								Boolean(b) => { println!("{}", b) }
 								// TODO: implement bindings
 								_ => { panic!("Bad type of {:?} for print!", rand)}
 							}
