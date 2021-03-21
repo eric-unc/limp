@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::Rule;
 use std::process::exit;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum LimpValue {
 	Integer(i64),
 	Float(f64),
@@ -45,7 +45,7 @@ impl PartialEq for LimpValue {
 				}
 			ErrorValue(s) =>
 				match other {
-					ErrorValue(s2) => s == s2,
+					ErrorValue(s2) => *s == *s2,
 					_ => false
 				}
 		}
@@ -81,8 +81,22 @@ impl Environment {
 	}
 
 	pub fn add_binding(&mut self, name: String, val: LimpValue){
-		// TODO: lol this doesn't work
-		//self.bindings.last().unwrap().insert(name, val);
+		let len = self.bindings.len();
+
+		self.bindings[len-1].insert(name, val);
+	}
+
+	pub fn get_binding(&mut self, name: String) -> LimpValue {
+		let len = self.bindings.len();
+
+		for i in len..0 {
+			if self.bindings[i].contains_key(&name) {
+				let value = self.bindings[i].get(&name).unwrap();
+				return value.clone();
+			}
+		}
+
+		ErrorValue("Binding does not exist".to_string())
 	}
 }
 
