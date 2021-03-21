@@ -116,6 +116,27 @@ fn parse_float(){
 }
 
 #[test]
+fn parse_boolean(){
+	parses_to! {
+		parser: LimpParser,
+		input: "true",
+		rule: Rule::boolean,
+		tokens: [
+			boolean(0, 4)
+		]
+	}
+
+	parses_to! {
+		parser: LimpParser,
+		input: "false",
+		rule: Rule::boolean,
+		tokens: [
+			boolean(0, 5)
+		]
+	}
+}
+
+#[test]
 fn parse_name(){
 	parses_to! {
 		parser: LimpParser,

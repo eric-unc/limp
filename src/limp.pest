@@ -2,12 +2,13 @@
 program = { SOI ~ expr_list ~ EOI }
 expr_list = { expr+ }
 expr = { atom | invocation }
-atom = { float | int | name }
+atom = { float | int | boolean | name }
 invocation = { "(" ~ expr_list ~ ")" }
 
 // Atoms
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+boolean = { "true" | "false" }
 name = { "+" | "-" | "*" | "/" | "print" | "exit" }
 
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }
