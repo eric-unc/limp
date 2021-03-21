@@ -52,7 +52,7 @@ impl Environment {
 			}
 		}
 
-		return ErrorValue;
+		ErrorValue;
 	}
 }
 
