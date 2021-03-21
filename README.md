@@ -22,11 +22,9 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 ```limp
 (print (+ 10 5) 1)
 
-(print (/ 8 (- 10 4 4)))
+(if true (print (/ 8 (- 10 4 4))) (print false))
 
-(exit)
-
-(5 / 0)
+(if (== 5.0 (+ 3 2)) (exit) (/ 5 0))
 ```
 
 #### Output
@@ -39,12 +37,19 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 ### Built-in procedures
 | Name | Description
 | :------ | :------
-| `+` | Adds all rands given. Requires at least two rands.
-| `-` | Subtracts the first rand from the remaining rands. Requires at least two rands.
-| `*` | Multiplies all rands given. Requires at least two rands.
-| `/` | Divides the first rand from the remaining rands. Requires at least two rands.
-| `print` | Prints (on new lines) each rand. Requires at least one rand.
-| `exit` | Exits the program with a 0 status. With an optional rand, exits with that status.
+| `+` | Adds all rands given. Requires at least two rands (int/float).
+| `-` | Subtracts the first rand from the remaining rands. Requires at least two rands (int/float).
+| `*` | Multiplies all rands given. Requires at least two rands (int/float).
+| `/` | Divides the first rand from the remaining rands. Requires at least two rands (int/float).
+| `and` | Ands all rands given. Requires at least two rands (boolean).
+| `or` | Ors all rands given. Requires at least two rands (boolean).
+| `xor` | Xors all rands given. Requires at least two rands (boolean).
+| `not` | Inverts the rand given. Requires just one rand (boolean).
+| `==` | Compares the rands given for equality. Require two rands (any type).
+| `!=` | Compares the rands given for inequality. Require two rands (any type).
+| `print` | Prints (on new lines) each rand. Requires at least one rand (int/float/boolean).
+| `exit` | Exits the program with a 0 status. With an optional rand, exits with that status  (int/float).
+| `if` | Returns one expression if the given condition is true, the other if false. It should be noted that if is a special form, and that the expression within will not be evaluated. Requires three rands (one boolean, two of any type).
 
 ## Technologies used
 * [Rust](https://github.com/rust-lang/rust)

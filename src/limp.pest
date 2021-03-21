@@ -1,13 +1,23 @@
 // Core
 program = { SOI ~ expr_list ~ EOI }
 expr_list = { expr+ }
-expr = { atom | invocation }
-atom = { float | int | name }
+expr = { atom | special_forms | invocation }
+atom = { float | int | boolean | name }
+special_forms = _{ if_form }
 invocation = { "(" ~ expr_list ~ ")" }
+
+// Special forms
+// These are separate from invocation because they need to use normal-order evaluation rather than applicative-order evaluation.
+if_form = { "(if" ~ expr ~ expr ~ expr ~ ")" }
 
 // Atoms
 int = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
 float = @{ ("+" | "-")? ~ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
-name = { "+" | "-" | "*" | "/" | "print" | "exit" }
+boolean = { "true" | "false" }
+name = { num_procedures | boolean_procedures | void_procedures }
+
+num_procedures = _{ "+" | "-" | "*" | "/" }
+boolean_procedures = _{ "and" | "or" | "xor" | "not" | "==" | "!=" }
+void_procedures = _{ "print" | "exit" }
 
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" | "\r\n" }
