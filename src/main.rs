@@ -5,6 +5,7 @@ extern crate pest_derive;
 use pest::Parser;
 use std::env;
 use std::io::{self, Write};
+use std::process::exit;
 
 #[derive(Parser)]
 #[grammar = "limp.pest"]
@@ -13,9 +14,13 @@ pub struct LimpParser;
 #[cfg(test)]
 mod tests;
 
+mod evaluator;
+
 fn main() {
-	//let p = LimpParser::parse(Rule::program, "5");
+	let p = LimpParser::parse(Rule::program, "(print (+ 1 2) (- 1 2) (* 3 4) (/ 8 2))");
 	//println!("{:?}", p);
+	evaluator::evaluate(p.unwrap());
+	exit(0); // temp
 
 	let args: Vec<String> = env::args().collect();
 
@@ -55,7 +60,7 @@ fn eval_line(line: &String) {
 			match inner_pair.as_rule() {
 				Rule::atom => eval_atom(inner_pair.as_str()),
 				Rule::invocation => eval_invocation(inner_pair.as_str()),
-        _ => unreachable!()
+				_ => unreachable!()
 			};
 		}
 	}

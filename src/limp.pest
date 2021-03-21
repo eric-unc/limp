@@ -1,8 +1,8 @@
 // Core
-program = _{ SOI ~ expr_list ~ EOI }
-expr_list = _{ expr+ }
+program = { SOI ~ expr_list ~ EOI }
+expr_list = { expr+ }
 expr = { atom | invocation }
-atom = { name | float | int }
+atom = { float | int | name }
 invocation = { "(" ~ expr_list ~ ")" }
 
 // Atoms
