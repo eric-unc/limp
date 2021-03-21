@@ -5,7 +5,7 @@ use std::process::exit;
 
 #[derive(Debug)]
 pub enum LimpValue {
-	Integer(u64),
+	Integer(i64),
 	Float(f64),
 	Name(String),
 	VoidValue,
@@ -110,7 +110,7 @@ fn eval_float(float: Pair<Rule>) -> LimpValue {
 }
 
 fn eval_int(int: Pair<Rule>) -> LimpValue {
-	Integer(int.as_span().as_str().parse::<u64>().unwrap())
+	Integer(int.as_span().as_str().parse::<i64>().unwrap())
 }
 
 fn eval_name(name: Pair<Rule>) -> LimpValue {
@@ -271,7 +271,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 }
 
 fn f_to_i_if_possible(float: f64) -> LimpValue {
-	let int = float as u64;
+	let int = float as i64;
 
 	if float != int as f64 {
 		Float(float)
