@@ -1,8 +1,6 @@
 use pest::iterators::{Pairs, Pair};
 use std::collections::HashMap;
 use crate::Rule;
-use std::ptr::null;
-use std::fmt;
 use std::process::exit;
 
 #[derive(Debug)]
@@ -10,6 +8,7 @@ pub enum LimpValue {
 	Integer(u64),
 	Float(f64),
 	Name(String),
+	VoidValue,
 	ErrorValue
 }
 
@@ -82,32 +81,28 @@ fn eval_expr_list(exprs: Pair<Rule>) -> Vec<LimpValue> {
 
 // expr :: atom | invocation
 fn eval_expr(expr: Pair<Rule>) -> LimpValue {
-	let mut ret = ErrorValue; // TODO: clean this up
-
 	for inner_pair in expr.into_inner() {
 		match inner_pair.as_rule() {
-			Rule::atom => ret = eval_atom(inner_pair),
-			Rule::invocation => ret = eval_invocation(inner_pair),
+			Rule::atom => return eval_atom(inner_pair),
+			Rule::invocation => return eval_invocation(inner_pair),
 			_ => unreachable!()
 		}
 	}
 
-	ret
+	unreachable!()
 }
 // atom ::= float | int | name
 fn eval_atom(atom: Pair<Rule>) -> LimpValue {
-	let mut ret = ErrorValue;
-
 	for inner_pair in atom.into_inner() {
 		match inner_pair.as_rule() {
-			Rule::float => ret = eval_float(inner_pair),
-			Rule::int => ret = eval_int(inner_pair),
-			Rule::name => ret = eval_name(inner_pair),
+			Rule::float => return eval_float(inner_pair),
+			Rule::int => return eval_int(inner_pair),
+			Rule::name => return eval_name(inner_pair),
 			_ => unreachable!()
 		}
 	}
 
-	ret
+	unreachable!();
 }
 
 fn eval_float(float: Pair<Rule>) -> LimpValue {
@@ -124,8 +119,6 @@ fn eval_name(name: Pair<Rule>) -> LimpValue {
 
 // invocation ::= ( expr_list )
 fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
-	let mut ret = ErrorValue;
-
 	for inner_pair in invocation.into_inner() {
 		let rators_and_rands = eval_expr_list(inner_pair);
 
@@ -151,7 +144,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							}
 						}
 
-						ret = f_to_i_if_possible(ret_val);
+						return f_to_i_if_possible(ret_val);
 					},
 					"-" => {
 						if rands.len() < 2 {
@@ -184,7 +177,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							}
 						}
 
-						ret = f_to_i_if_possible(ret_val);
+						return f_to_i_if_possible(ret_val);
 					},
 					"*" => {
 						if rands.len() < 2 {
@@ -202,7 +195,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							}
 						}
 
-						ret = f_to_i_if_possible(ret_val);
+						return f_to_i_if_possible(ret_val);
 					},
 					"/" => {
 						if rands.len() < 2 {
@@ -235,7 +228,7 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 							}
 						}
 
-						ret = f_to_i_if_possible(ret_val);
+						return f_to_i_if_possible(ret_val);
 					},
 					"print" => {
 						if rands.len() < 1 {
@@ -250,6 +243,8 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 								_ => { panic!("Bad type of {:?} for print!", rand)}
 							}
 						}
+
+						return VoidValue;
 					},
 					"exit" => {
 						match rands.len() {
@@ -272,15 +267,15 @@ fn eval_invocation(invocation: Pair<Rule>) -> LimpValue {
 		}
 	}
 
-	ret
+	unreachable!()
 }
 
 fn f_to_i_if_possible(float: f64) -> LimpValue {
 	let int = float as u64;
 
 	if float != int as f64 {
-		LimpValue::Float(float)
+		Float(float)
 	} else {
-		LimpValue::Integer(int)
+		Integer(int)
 	}
 }

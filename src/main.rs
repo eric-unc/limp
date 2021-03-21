@@ -4,8 +4,7 @@ extern crate pest_derive;
 
 use pest::Parser;
 use std::{env, fs};
-use std::io::{self, Write, Error};
-use std::process::exit;
+use std::io::{self, Write};
 use crate::evaluator::{Environment, eval_with_env, eval};
 
 #[derive(Parser)]
@@ -48,7 +47,7 @@ fn repl() {
 		line = line.trim().to_string();
 
 		if line.is_empty() {
-			return;
+			continue;
 		}
 
 		let parse_tree = LimpParser::parse(Rule::program, &line);
