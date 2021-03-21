@@ -6,6 +6,7 @@ use pest::Parser;
 use std::env;
 use std::io::{self, Write};
 use std::process::exit;
+use crate::evaluator::{Environment, eval_with_env};
 
 #[derive(Parser)]
 #[grammar = "limp.pest"]
@@ -17,10 +18,10 @@ mod tests;
 mod evaluator;
 
 fn main() {
-	let p = LimpParser::parse(Rule::program, "(print (+ 1 2) (- 1 2) (* 3 4) (/ 8 2))");
+	//let p = LimpParser::parse(Rule::program, "(print (+ 1 2) (- 1 2) (* 3 4) (/ 8 2))");
 	//println!("{:?}", p);
-	evaluator::evaluate(p.unwrap());
-	exit(0); // temp
+	//evaluator::evaluate(p.unwrap());
+	//exit(0); // temp
 
 	let args: Vec<String> = env::args().collect();
 
@@ -36,41 +37,31 @@ fn load_and_interpret(file_name: &String) {
 }
 
 fn repl() {
+	let env = Environment::new();
+
 	loop {
-		print!("> ");
+		print!(">>> ");
 		io::stdout().flush().unwrap();
 
 		let mut line = String::new();
 		io::stdin().read_line(&mut line).unwrap();
-		line = line.strip_suffix("\n").unwrap().to_string();
+		line = line.trim().to_string();
+
 		if line.is_empty() {
 			return;
 		}
 
-		eval_line(&line);
+		let parse_tree = LimpParser::parse(Rule::program, &line);
+
+		match parse_tree {
+			Ok(tree) => {
+				eval_with_env(tree, &env);
+			},
+			Err(e) => {
+				println!("{}", e)
+			}
+		}
+
 		io::stdout().flush().unwrap();
 	}
-}
-
-fn eval_line(line: &String) {
-	let pairs = LimpParser::parse(Rule::expr, line).unwrap_or_else(|e| panic!("{}", e));
-
-	for pair in pairs {
-		for inner_pair in pair.into_inner() {
-			match inner_pair.as_rule() {
-				Rule::atom => eval_atom(inner_pair.as_str()),
-				Rule::invocation => eval_invocation(inner_pair.as_str()),
-				_ => unreachable!()
-			};
-		}
-	}
-}
-
-fn eval_atom(atom: &str) {
-	println!("{}", atom);
-}
-
-fn eval_invocation(invocation: &str) {
-	// TODO
-	println!("Invocation: {}", invocation)
 }

@@ -42,8 +42,16 @@ impl Environment {
 	}
 }
 
+pub fn eval(tree: Pairs<Rule>){
+	eval_with_env(tree, &Environment::new());
+}
+
+pub fn eval_with_env(tree: Pairs<Rule>, env: &Environment){
+	eval_program(tree);
+}
+
 // program ::= expr_list
-pub fn evaluate(tree: Pairs<Rule>){
+fn eval_program(tree: Pairs<Rule>){
 	for pair in tree {
 
 		for inner_pair in pair.into_inner() {
