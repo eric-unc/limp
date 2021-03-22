@@ -61,7 +61,10 @@ Limp has two major constructions. The first is the "atom", which is a singular u
 * [Rust](https://github.com/rust-lang/rust)
     * [Cargo](https://github.com/rust-lang/cargo)
     * [pest](https://github.com/pest-parser/pest)
-    
+
+## Demo
+* [Short demo](https://www.youtube.com/watch?v=DuKuPBlLGPI) (3 mins), made right before submission.
+
 ## Authors
 1. Eric Schneider
 2. Chongyi Zheng
