@@ -3,6 +3,8 @@
 
 <img src="limp_logo.png" width="200" alt="The Limp logo.">
 
+Limp has been succeeded with [psil](https://github.com/eric-unc/psil).
+
 ## Installation
 Limp can be installed by doing the following:
 1. Cloning this repo (`git clone https://github.com/eric-unc/limp.git`).
